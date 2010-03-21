@@ -1,0 +1,7 @@
+base   autolink2
+author Otto Vainio
+email  otto@valjakko.net
+date   2010-03-20
+name   autolink2 plugin
+desc   Generate automatic links for words defined by add plugin
+url    http://koti.mbnet.fi/oiv/pubtest/autolink2
