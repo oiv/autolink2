@@ -4,6 +4,7 @@
  * @author     Otto Vainio <oiv-plugins@valjakko.net>
  *             Ideas "borrowed" from Esther Brunners tag plugin.
  * Version 8.3.2007 Fixed replace patter to use back reference to keep case of replaced text
+ * Version 11.10.2011 Quote regular expression characters
  */
 
 // must be run within Dokuwiki
@@ -34,6 +35,8 @@ class helper_plugin_autolink2 extends DokuWiki_Plugin {
   
     // load page and tag index
     $autolink_index      = @file($this->idx_dir.'/autolink.idx');
+    usort($autolink_index,array("helper_plugin_autolink2","lensort"));
+
     if (is_array($autolink_index)){
       foreach ($autolink_index as $idx_line){
         list($key, $value) = explode("\t", $idx_line, 2);
@@ -44,9 +47,9 @@ class helper_plugin_autolink2 extends DokuWiki_Plugin {
     }
   }
 
-    function getInfo() {
-        return confToHash(dirname(__FILE__).'/plugin.info.txt');
-    }
+  function getInfo() {
+    return confToHash(dirname(__FILE__).'/plugin.info.txt');
+  }
   
   function getMethods(){
     $result = array();
@@ -140,12 +143,12 @@ class helper_plugin_autolink2 extends DokuWiki_Plugin {
     // clean array first
     $c = count($autolinks);
     for ($i = 0; $i <= $c; $i++){
-      $autolinks[$i] = utf8_strtolower($autolinks[$i]);
+      $autolinks[$i] = utf8_strtolower(preg_quote($autolinks[$i], '/'));
     }
-
     // clear no longer used autolinks
     if ($ID == $id){
       $oldautolinks = $INFO['meta']['anchors'];
+      $oldautolinks = $this->getoldautolinks($pid);
       if (!is_array($oldautolinks)) $oldautolinks = explode(' ', $oldautolinks);
       foreach ($oldautolinks as $oldtag){
         if (!$oldtag) continue;                 // skip empty autolinks
@@ -155,7 +158,7 @@ class helper_plugin_autolink2 extends DokuWiki_Plugin {
         $changed = true;
       }
     }
-        
+
     // fill tag in
     foreach ($autolinks as $autolink){
       if (!$autolink) continue; // skip empty autolinks
@@ -182,11 +185,9 @@ class helper_plugin_autolink2 extends DokuWiki_Plugin {
       return;
     }
     
-    
     // clear no longer used autolinks
     if ($ID == $id){
       $oldautolinks = $INFO['meta']['anchors'];
-
       if (!is_array($oldautolinks)) $oldautolinks = explode(' ', $oldautolinks);
       foreach ($oldautolinks as $oldtag){
         if (!$oldtag) continue;                 // skip empty autolinks
@@ -210,6 +211,17 @@ class helper_plugin_autolink2 extends DokuWiki_Plugin {
     // save tag index
     if ($changed) return $this->_saveIndex('autolink');
     else return true;
+  }
+
+  function getoldautolinks($thispid) {
+    $ali = $this->autolink_idx;
+    $retlinks = array();
+    foreach($ali as $key=>$ind) {
+      if ($ind==$thispid) {
+        $retlinks[]=$key;
+      }
+    }
+    return $retlinks;
   }
 
   /**

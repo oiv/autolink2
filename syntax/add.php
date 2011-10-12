@@ -53,7 +53,7 @@ class syntax_plugin_autolink2_add extends DokuWiki_Syntax_Plugin {
     global $ID;
     global $conf;
     global $ACT;
-    //if ($ACT<>"save") return "";
+    if ($ACT<>"show") return "";
     $anchors = explode('|', substr($match, 11, -2)); // strip markup and split tags
     if (!$my = plugin_load('helper', 'autolink2')) return false;
     $my->_updateAutolinkIndex($ID, $anchors);
