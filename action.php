@@ -21,7 +21,7 @@ class action_plugin_autolink2 extends DokuWiki_Action_Plugin {
   /**
    * Register its handlers with the DokuWiki's event controller
    */
-  function register(&$controller) {
+  function register(Doku_Event_Handler $controller) {
     $controller->register_hook('PARSER_WIKITEXT_PREPROCESS', 'BEFORE',  $this, '_hookautolink');
     $controller->register_hook('IO_WIKIPAGE_WRITE', 'BEFORE',  $this, '_hookautolinkwrite');
   }
