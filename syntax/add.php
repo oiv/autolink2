@@ -49,7 +49,7 @@ class syntax_plugin_autolink2_add extends DokuWiki_Syntax_Plugin {
      * Handle the match
      */
 
-  function handle($match, $state, $pos, &$handler){
+  function handle($match, $state, $pos, Doku_Handler $handler){
     global $ID;
     global $conf;
     global $ACT;
@@ -64,7 +64,7 @@ class syntax_plugin_autolink2_add extends DokuWiki_Syntax_Plugin {
     /**
      * Create output
      */
-  function render($mode, &$renderer, $data) {
+  function render($mode, Doku_Renderer $renderer, $data) {
     if ($data === false) return false;
     if (!$my = plugin_load('helper', 'autolink2')) return false;
     // XHTML output
